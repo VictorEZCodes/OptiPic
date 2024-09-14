@@ -10,6 +10,7 @@ import { Switch } from "@/components/ui/switch";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import imageCompression from 'browser-image-compression';
 
 const OptiPic = () => {
   const [files, setFiles] = useState([]);
@@ -57,20 +58,37 @@ const OptiPic = () => {
     document.getElementById('file-upload').click();
   };
 
+  const compressImage = async (file) => {
+    const options = {
+      maxSizeMB: 1, // compress to 1MB
+      maxWidthOrHeight: Math.max(maxWidth, maxHeight),
+      useWebWorker: true,
+    };
+    try {
+      const compressedFile = await imageCompression(file, options);
+      return new File([compressedFile], file.name, { type: compressedFile.type });
+    } catch (error) {
+      console.error("Compression failed", error);
+      return file; // Return original file if compression fails
+    }
+  };
+
   const handleCompression = async () => {
     setCompressing(true);
     setProgress(0);
 
-    const formData = new FormData();
-    files.forEach((file) => formData.append('images', file));
-    formData.append('quality', quality);
-    formData.append('maxWidth', maxWidth);
-    formData.append('maxHeight', maxHeight);
-    formData.append('addSuffix', addSuffix);
-    formData.append('suffix', suffix);
-    formData.append('format', format);
-
     try {
+      const compressedFiles = await Promise.all(files.map(compressImage));
+
+      const formData = new FormData();
+      compressedFiles.forEach((file) => formData.append('images', file));
+      formData.append('quality', quality.toString());
+      formData.append('maxWidth', maxWidth.toString());
+      formData.append('maxHeight', maxHeight.toString());
+      formData.append('addSuffix', addSuffix.toString());
+      formData.append('suffix', suffix);
+      formData.append('format', format);
+
       const response = await fetch('/api/compress', {
         method: 'POST',
         body: formData,
