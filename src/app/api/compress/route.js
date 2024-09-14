@@ -1,6 +1,14 @@
 import { NextResponse } from 'next/server';
 import sharp from 'sharp';
 
+export const config = {
+  api: {
+    bodyParser: {
+      sizeLimit: '20mb'
+    }
+  }
+};
+
 export async function POST(req) {
   const formData = await req.formData();
   const files = formData.getAll('images');
