@@ -137,10 +137,9 @@ const OptiPic = () => {
 
       {/* Main Content */}
       <main className="max-w-3xl mx-auto px-6 py-12">
-        <h1 className="text-4xl font-bold mb-4 text-center">Compress your images in bulk</h1>
+        <h1 className="text-4xl font-bold mb-4 text-center">Compress your images easily</h1>
         <p className="text-xl text-gray-600 mb-12 text-center">
-          The fastest and most efficient web-based image compression tool. Optimize
-          your images quickly and securely without any hassle.
+          The quickest and most effective online tool for compressing images. Easily optimize your images in no time, all while keeping it secure.
         </p>
 
         {/* File Upload Area */}
